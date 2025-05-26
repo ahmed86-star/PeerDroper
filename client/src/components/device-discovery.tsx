@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import QRScannerComponent from './qr-scanner';
 import { useEffect, useState } from 'react';
 
 export default function DeviceDiscovery() {
@@ -80,8 +81,10 @@ export default function DeviceDiscovery() {
     });
   };
 
-  const handleQRCodeConnect = () => {
-    if (!qrCodeData) {
+  const handleQRCodeConnect = (scannedData?: string) => {
+    const dataToProcess = scannedData || qrCodeData;
+    
+    if (!dataToProcess) {
       toast({
         title: 'No QR code data',
         description: 'Please scan a valid QR code',
@@ -92,7 +95,7 @@ export default function DeviceDiscovery() {
 
     try {
       // Parse QR code data (expected format: droppy://name:type:ip)
-      const qrUrl = new URL(qrCodeData);
+      const qrUrl = new URL(dataToProcess);
       if (qrUrl.protocol !== 'droppy:') {
         throw new Error('Invalid QR code format');
       }
@@ -100,7 +103,7 @@ export default function DeviceDiscovery() {
       const [name, type, ip] = qrUrl.hostname.split(':');
       
       addDeviceMutation.mutate({
-        name: name || 'Unknown Device',
+        name: decodeURIComponent(name) || 'Unknown Device',
         type: type || 'mobile',
         ipAddress: ip || '192.168.1.101',
       });
@@ -114,6 +117,14 @@ export default function DeviceDiscovery() {
         variant: 'destructive',
       });
     }
+  };
+
+  const handleQRScanError = (error: string) => {
+    toast({
+      title: 'Camera Error',
+      description: error,
+      variant: 'destructive',
+    });
   };
 
   const generateCurrentDeviceQR = () => {
@@ -243,13 +254,12 @@ export default function DeviceDiscovery() {
                             placeholder="Paste QR code data or scan with camera"
                           />
                         </div>
-                        <div className="text-center p-8 border-2 border-dashed border-slate-300 rounded-lg">
-                          <i className="fas fa-camera text-4xl text-slate-400 mb-4"></i>
-                          <p className="text-slate-600">Camera QR scanner would appear here</p>
-                          <p className="text-sm text-slate-500 mt-2">For now, paste the QR data manually</p>
-                        </div>
+                        <QRScannerComponent 
+                          onScan={handleQRCodeConnect}
+                          onError={handleQRScanError}
+                        />
                         <Button 
-                          onClick={handleQRCodeConnect} 
+                          onClick={() => handleQRCodeConnect()} 
                           disabled={addDeviceMutation.isPending}
                           className="w-full"
                         >
