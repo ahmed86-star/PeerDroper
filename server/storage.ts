@@ -13,6 +13,7 @@ export interface IStorage {
   getFiles(): Promise<File[]>;
   getFile(id: number): Promise<File | undefined>;
   createFile(file: InsertFile): Promise<File>;
+  deleteFile(id: number): Promise<void>;
   
   // Transfer operations
   getTransfers(): Promise<Transfer[]>;
@@ -66,6 +67,10 @@ export class DatabaseStorage implements IStorage {
       .values(insertFile)
       .returning();
     return file;
+  }
+
+  async deleteFile(id: number): Promise<void> {
+    await db.delete(files).where(eq(files.id, id));
   }
 
   async getTransfers(): Promise<Transfer[]> {
@@ -207,6 +212,10 @@ export class MemStorage implements IStorage {
     };
     this.files.set(file.id, file);
     return file;
+  }
+
+  async deleteFile(id: number): Promise<void> {
+    this.files.delete(id);
   }
 
   async getTransfers(): Promise<Transfer[]> {

@@ -130,6 +130,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete file
+  app.delete('/api/files/:id', async (req, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const file = await storage.getFile(fileId);
+      
+      if (!file) {
+        return res.status(404).json({ error: 'File not found' });
+      }
+
+      // Delete from database
+      await storage.deleteFile(fileId);
+      
+      // Delete from filesystem
+      const filePath = path.join('uploads', file.filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete file' });
+    }
+  });
+
   // Download file
   app.get('/api/files/:id/download', async (req, res) => {
     try {
