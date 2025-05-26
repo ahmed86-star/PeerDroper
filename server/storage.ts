@@ -1,4 +1,6 @@
 import { devices, files, transfers, messages, type Device, type File, type Transfer, type Message, type InsertDevice, type InsertFile, type InsertTransfer, type InsertMessage } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Device operations
@@ -22,6 +24,103 @@ export interface IStorage {
   // Message operations
   getMessages(): Promise<Message[]>;
   createMessage(message: InsertMessage): Promise<Message>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getDevices(): Promise<Device[]> {
+    return await db.select().from(devices);
+  }
+
+  async getDevice(id: number): Promise<Device | undefined> {
+    const [device] = await db.select().from(devices).where(eq(devices.id, id));
+    return device || undefined;
+  }
+
+  async createDevice(insertDevice: InsertDevice): Promise<Device> {
+    const [device] = await db
+      .insert(devices)
+      .values(insertDevice)
+      .returning();
+    return device;
+  }
+
+  async updateDeviceConnection(id: number, isConnected: boolean): Promise<void> {
+    await db
+      .update(devices)
+      .set({ isConnected, lastSeen: new Date() })
+      .where(eq(devices.id, id));
+  }
+
+  async getFiles(): Promise<File[]> {
+    return await db.select().from(files).orderBy(files.uploadedAt);
+  }
+
+  async getFile(id: number): Promise<File | undefined> {
+    const [file] = await db.select().from(files).where(eq(files.id, id));
+    return file || undefined;
+  }
+
+  async createFile(insertFile: InsertFile): Promise<File> {
+    const [file] = await db
+      .insert(files)
+      .values(insertFile)
+      .returning();
+    return file;
+  }
+
+  async getTransfers(): Promise<Transfer[]> {
+    return await db.select().from(transfers).orderBy(transfers.startedAt);
+  }
+
+  async getActiveTransfers(): Promise<Transfer[]> {
+    return await db
+      .select()
+      .from(transfers)
+      .where(eq(transfers.status, "active"));
+  }
+
+  async createTransfer(insertTransfer: InsertTransfer): Promise<Transfer> {
+    const [transfer] = await db
+      .insert(transfers)
+      .values(insertTransfer)
+      .returning();
+    return transfer;
+  }
+
+  async updateTransferProgress(id: number, progress: number): Promise<void> {
+    const updateData: any = { progress };
+    if (progress === 100) {
+      updateData.status = "completed";
+      updateData.completedAt = new Date();
+    }
+    await db
+      .update(transfers)
+      .set(updateData)
+      .where(eq(transfers.id, id));
+  }
+
+  async updateTransferStatus(id: number, status: string): Promise<void> {
+    const updateData: any = { status };
+    if (status === "completed") {
+      updateData.completedAt = new Date();
+    }
+    await db
+      .update(transfers)
+      .set(updateData)
+      .where(eq(transfers.id, id));
+  }
+
+  async getMessages(): Promise<Message[]> {
+    return await db.select().from(messages).orderBy(messages.sentAt);
+  }
+
+  async createMessage(insertMessage: InsertMessage): Promise<Message> {
+    const [message] = await db
+      .insert(messages)
+      .values(insertMessage)
+      .returning();
+    return message;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -173,4 +272,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
