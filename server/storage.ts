@@ -74,6 +74,7 @@ export class MemStorage implements IStorage {
       ...insertDevice,
       id: this.currentDeviceId++,
       lastSeen: new Date(),
+      isConnected: insertDevice.isConnected || false,
     };
     this.devices.set(device.id, device);
     return device;
@@ -103,6 +104,7 @@ export class MemStorage implements IStorage {
       ...insertFile,
       id: this.currentFileId++,
       uploadedAt: new Date(),
+      uploadedBy: insertFile.uploadedBy || null,
     };
     this.files.set(file.id, file);
     return file;
