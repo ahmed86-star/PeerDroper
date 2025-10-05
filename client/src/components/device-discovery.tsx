@@ -68,10 +68,10 @@ export default function DeviceDiscovery() {
   const connectedDevices = devices?.filter(device => device.isConnected) || [];
 
   const handleAddDevice = () => {
-    if (!deviceName || !deviceType || !deviceIP) {
+    if (!deviceName || !deviceType) {
       toast({
         title: 'Missing information',
-        description: 'Please fill in all device details',
+        description: 'Please fill in device name and type',
         variant: 'destructive',
       });
       return;
@@ -80,7 +80,7 @@ export default function DeviceDiscovery() {
     addDeviceMutation.mutate({
       name: deviceName,
       type: deviceType,
-      ipAddress: deviceIP,
+      ipAddress: deviceIP || 'Cloud Device',
     });
   };
 
@@ -97,18 +97,14 @@ export default function DeviceDiscovery() {
     }
 
     try {
-      // Parse QR code data (expected format: droppy://name:type:ip)
-      const qrUrl = new URL(dataToProcess);
-      if (qrUrl.protocol !== 'droppy:') {
-        throw new Error('Invalid QR code format');
-      }
+      // For cloud deployment, QR code contains the app URL
+      // Open the URL in a new tab so users can access the app
+      const url = new URL(dataToProcess);
+      window.open(dataToProcess, '_blank');
       
-      const [name, type, ip] = qrUrl.hostname.split(':');
-      
-      addDeviceMutation.mutate({
-        name: decodeURIComponent(name) || 'Unknown Device',
-        type: type || 'mobile',
-        ipAddress: ip || '192.168.1.101',
+      toast({
+        title: 'Opening app',
+        description: 'App opened in new tab',
       });
       
       setIsQRScannerOpen(false);
@@ -116,7 +112,7 @@ export default function DeviceDiscovery() {
     } catch (error) {
       toast({
         title: 'Invalid QR code',
-        description: 'Please scan a valid Droppy QR code',
+        description: 'Please scan a valid QR code URL',
         variant: 'destructive',
       });
     }
@@ -131,11 +127,9 @@ export default function DeviceDiscovery() {
   };
 
   const generateCurrentDeviceQR = () => {
-    const currentDevice = devices?.find(d => d.id === 1);
-    if (currentDevice) {
-      return `droppy://${currentDevice.name}:${currentDevice.type}:${currentDevice.ipAddress}`;
-    }
-    return 'droppy://MacBook%20Pro:desktop:192.168.1.100';
+    // Use the current app URL (works both on Replit and Railway)
+    const appUrl = window.location.origin;
+    return appUrl;
   };
 
   useEffect(() => {
@@ -192,7 +186,9 @@ export default function DeviceDiscovery() {
                 </div>
                 <div className="flex-1">
                   <div className="font-medium text-slate-900 dark:text-white">{device.name}</div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">{device.ipAddress}</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">
+                    {device.ipAddress === 'Cloud Device' ? device.type : device.ipAddress}
+                  </div>
                 </div>
                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               </div>
@@ -246,12 +242,12 @@ export default function DeviceDiscovery() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="device-ip">IP Address</Label>
+                  <Label htmlFor="device-ip">Device Identifier (optional)</Label>
                   <Input
                     id="device-ip"
                     value={deviceIP}
                     onChange={(e) => setDeviceIP(e.target.value)}
-                    placeholder="e.g., 192.168.1.101"
+                    placeholder="e.g., User's Phone, Work Laptop"
                   />
                 </div>
                 <div className="flex space-x-2">
@@ -324,8 +320,8 @@ export default function DeviceDiscovery() {
                 </div>
               )}
             </div>
-            <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Scan QR code to connect</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Other devices can scan this code to connect</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Scan to access this app</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Scan with your phone to open the app</p>
             <Button
               variant="outline"
               size="sm"
