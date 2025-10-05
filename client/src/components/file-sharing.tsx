@@ -16,6 +16,7 @@ export default function FileSharing() {
   const { toast } = useToast();
   const { lastMessage } = useWebSocket();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [clearAllDialogOpen, setClearAllDialogOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<File | null>(null);
 
   const { data: files, refetch: refetchFiles } = useQuery<File[]>({
@@ -65,6 +66,30 @@ export default function FileSharing() {
       toast({
         title: 'Delete failed',
         description: 'There was an error deleting the file',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const clearAllFilesMutation = useMutation({
+    mutationFn: async () => {
+      const allFiles = files || [];
+      await Promise.all(
+        allFiles.map(file => apiRequest('DELETE', `/api/files/${file.id}`))
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/files'] });
+      setClearAllDialogOpen(false);
+      toast({
+        title: 'All files cleared',
+        description: 'All files have been removed from your shares',
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Clear failed',
+        description: 'There was an error clearing all files',
         variant: 'destructive',
       });
     },
@@ -147,6 +172,16 @@ export default function FileSharing() {
     if (fileToDelete) {
       deleteFileMutation.mutate(fileToDelete.id);
     }
+  };
+
+  const handleClearAllClick = () => {
+    if (files && files.length > 0) {
+      setClearAllDialogOpen(true);
+    }
+  };
+
+  const confirmClearAll = () => {
+    clearAllFilesMutation.mutate();
   };
 
   const recentFiles = files?.slice(0, 5) || [];
@@ -239,9 +274,19 @@ export default function FileSharing() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Recent Files</CardTitle>
-            <Button variant="ghost" className="text-blue-600 hover:text-blue-700">
-              View All
-            </Button>
+            <div className="flex items-center space-x-2">
+              {files && files.length > 0 && (
+                <Button 
+                  variant="ghost" 
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  onClick={handleClearAllClick}
+                  data-testid="button-clear-all-files"
+                >
+                  <i className="fas fa-trash mr-2"></i>
+                  Clear All
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -343,6 +388,29 @@ export default function FileSharing() {
               className="bg-red-600 hover:bg-red-700"
             >
               {deleteFileMutation.isPending ? 'Deleting...' : 'Delete File'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Clear All Confirmation Dialog */}
+      <AlertDialog open={clearAllDialogOpen} onOpenChange={setClearAllDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear All Files</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete all {files?.length || 0} files? This action cannot be undone and all files will be permanently removed from your shares.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmClearAll}
+              disabled={clearAllFilesMutation.isPending}
+              className="bg-red-600 hover:bg-red-700"
+              data-testid="button-confirm-clear-all"
+            >
+              {clearAllFilesMutation.isPending ? 'Clearing...' : 'Clear All Files'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
