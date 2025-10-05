@@ -2,6 +2,22 @@
 
 Droppy is a local file sharing application that enables real-time file transfers, messaging, and device discovery across a local network. The application uses a modern full-stack architecture with React on the frontend and Express.js with WebSocket support on the backend, providing seamless peer-to-peer communication between connected devices.
 
+## Key Features
+
+- **File Sharing**: Drag-and-drop file uploads with support for multiple files up to 100MB each
+- **QR Code Generator**: Generate QR codes from URLs or text for easy sharing
+- **Device Discovery**: Add and manage connected devices with QR code scanning
+- **Real-time Messaging**: Send messages between connected devices
+- **Context Menu Actions**: Right-click files for download, share, copy details, or delete
+- **Live Transfer Tracking**: Monitor file upload progress in real-time
+
+## Recent Changes (October 2025)
+
+- Fixed file upload functionality by adding FormData detection to API request handler
+- Added QR Code Generator with copy and download capabilities
+- Implemented context menu for file actions (download, share link, delete)
+- Added Railway deployment configuration for production hosting
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -68,8 +84,9 @@ Preferred communication style: Simple, everyday language.
 - WebSocket-enabled connection for serverless environments
 
 **UI Libraries**
-- Radix UI primitives for accessible components (dialogs, dropdowns, tooltips, etc.)
+- Radix UI primitives for accessible components (dialogs, dropdowns, tooltips, tabs, context menus, etc.)
 - QR code scanning via `qr-scanner` library for device pairing
+- QR code generation via `qrcode` library for sharing
 - Date manipulation with `date-fns`
 - Form validation with `zod` and `@hookform/resolvers`
 
