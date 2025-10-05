@@ -1,8 +1,10 @@
 import AppHeader from '@/components/app-header';
 import DeviceDiscovery from '@/components/device-discovery';
 import FileSharing from '@/components/file-sharing';
+import QRGenerator from '@/components/qr-generator';
 import MessagingPanel from '@/components/messaging-panel';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {
   return (
@@ -16,7 +18,24 @@ export default function Home() {
           </div>
           
           <div className="lg:col-span-2">
-            <FileSharing />
+            <Tabs defaultValue="files" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-4">
+                <TabsTrigger value="files" data-testid="tab-files">
+                  <i className="fas fa-file mr-2"></i>
+                  Share Files
+                </TabsTrigger>
+                <TabsTrigger value="qr" data-testid="tab-qr">
+                  <i className="fas fa-qrcode mr-2"></i>
+                  QR Generator
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="files">
+                <FileSharing />
+              </TabsContent>
+              <TabsContent value="qr">
+                <QRGenerator />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
         
