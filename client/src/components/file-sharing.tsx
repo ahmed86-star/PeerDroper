@@ -101,7 +101,13 @@ export default function FileSharing() {
       formData.append('deviceId', '1'); // Current device ID
       uploadMutation.mutate(formData);
     });
+    
+    e.target.value = '';
   }, [uploadMutation]);
+
+  const handleDropZoneClick = useCallback(() => {
+    document.getElementById('file-upload')?.click();
+  }, []);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -157,17 +163,24 @@ export default function FileSharing() {
             className="border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer"
             onDrop={handleFileDrop}
             onDragOver={handleDragOver}
+            onClick={handleDropZoneClick}
           >
             <div className="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
               <i className="fas fa-cloud-upload-alt text-blue-600 text-2xl"></i>
             </div>
             <h3 className="text-lg font-semibold text-slate-900 mb-2">Drop files here to share</h3>
             <p className="text-slate-500 mb-4">or click to browse your files</p>
-            <label htmlFor="file-upload">
-              <Button className="bg-blue-600 text-white hover:bg-blue-700" disabled={uploadMutation.isPending}>
-                {uploadMutation.isPending ? 'Uploading...' : 'Choose Files'}
-              </Button>
-            </label>
+            <Button 
+              className="bg-blue-600 text-white hover:bg-blue-700" 
+              disabled={uploadMutation.isPending}
+              onClick={(e) => {
+                e.stopPropagation();
+                document.getElementById('file-upload')?.click();
+              }}
+              data-testid="button-choose-files"
+            >
+              {uploadMutation.isPending ? 'Uploading...' : 'Choose Files'}
+            </Button>
             <input
               id="file-upload"
               type="file"
