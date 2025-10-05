@@ -6,12 +6,24 @@ Droppy is a local file sharing application that enables real-time file transfers
 
 - **File Sharing**: Drag-and-drop file uploads with support for multiple files up to 100MB each
 - **QR Code Generator**: Generate QR codes from URLs or text for easy sharing
+- **Image Format Converter**: Client-side image format conversion with batch processing and ZIP packaging
 - **Device Discovery**: Add and manage connected devices with QR code scanning
 - **Real-time Messaging**: Send messages between connected devices
 - **Context Menu Actions**: Right-click files for download, share, copy details, or delete
 - **Live Transfer Tracking**: Monitor file upload progress in real-time
 
 ## Recent Changes (October 2025)
+
+- **Image Format Converter** (October 5, 2025):
+  - Client-side image format conversion (no server upload required)
+  - Supports input formats: PNG, JPEG, WebP, AVIF, GIF, SVG, BMP, HEIC/HEIF
+  - Supports output formats: PNG, JPEG, WebP
+  - Adjustable quality settings (1-100%)
+  - Batch conversion with automatic ZIP packaging
+  - Drag-and-drop interface for easy file selection
+  - Real-time compression statistics
+  - Individual and bulk download options
+  - Uses Canvas API and JSZip for browser-based processing
 
 - **Cloud Deployment Support** (October 5, 2025):
   - QR Code now generates app URL instead of local IP for cloud compatibility
@@ -106,6 +118,8 @@ Preferred communication style: Simple, everyday language.
 - Radix UI primitives for accessible components (dialogs, dropdowns, tooltips, tabs, context menus, etc.)
 - QR code scanning via `qr-scanner` library for device pairing
 - QR code generation via `qrcode` library for sharing
+- Client-side image processing via Canvas API
+- ZIP file generation via `jszip` library for batch downloads
 - Date manipulation with `date-fns`
 - Form validation with `zod` and `@hookform/resolvers`
 
