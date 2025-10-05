@@ -13,6 +13,13 @@ Droppy is a local file sharing application that enables real-time file transfers
 
 ## Recent Changes (October 2025)
 
+- **Dark Theme Support**: Added full dark mode with theme toggle button in header
+  - ThemeProvider component manages theme state with localStorage persistence
+  - All components updated with dark mode variants (cards, buttons, text, backgrounds)
+  - Smooth transitions between light and dark modes
+- **GitHub Link**: Added footer with link to https://github.com/ahmed86-star
+- **Clear All Files**: Added bulk file deletion with confirmation dialog
+- **Real QR Codes**: Upgraded Quick Connect section with actual scannable QR codes using qrcode library
 - Fixed file upload functionality by adding FormData detection to API request handler
 - Added QR Code Generator with copy and download capabilities
 - Implemented context menu for file actions (download, share link, delete)

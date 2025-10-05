@@ -189,24 +189,24 @@ export default function FileSharing() {
   return (
     <div className="space-y-8">
       {/* File Drop Zone */}
-      <Card>
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
         <CardHeader>
-          <CardTitle>Share Files</CardTitle>
+          <CardTitle className="text-slate-900 dark:text-white">Share Files</CardTitle>
         </CardHeader>
         <CardContent>
           <div
-            className="border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer"
+            className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl p-12 text-center hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer"
             onDrop={handleFileDrop}
             onDragOver={handleDragOver}
             onClick={handleDropZoneClick}
           >
-            <div className="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
-              <i className="fas fa-cloud-upload-alt text-blue-600 text-2xl"></i>
+            <div className="w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/50 rounded-2xl flex items-center justify-center mb-4">
+              <i className="fas fa-cloud-upload-alt text-blue-600 dark:text-blue-400 text-2xl"></i>
             </div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">Drop files here to share</h3>
-            <p className="text-slate-500 mb-4">or click to browse your files</p>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Drop files here to share</h3>
+            <p className="text-slate-500 dark:text-slate-400 mb-4">or click to browse your files</p>
             <Button 
-              className="bg-blue-600 text-white hover:bg-blue-700" 
+              className="bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600" 
               disabled={uploadMutation.isPending}
               onClick={(e) => {
                 e.stopPropagation();
@@ -223,34 +223,34 @@ export default function FileSharing() {
               className="hidden"
               onChange={handleFileSelect}
             />
-            <p className="text-xs text-slate-400 mt-3">Support for images, documents, videos up to 100MB</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">Support for images, documents, videos up to 100MB</p>
           </div>
         </CardContent>
       </Card>
 
       {/* Active Transfers */}
       {activeTransfers && activeTransfers.length > 0 && (
-        <Card>
+        <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Active Transfers</CardTitle>
-              <span className="text-sm text-slate-500">{activeTransfers.length} active</span>
+              <CardTitle className="text-slate-900 dark:text-white">Active Transfers</CardTitle>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{activeTransfers.length} active</span>
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {activeTransfers.map((transfer) => (
-                <div key={transfer.id} className="flex items-center p-4 bg-slate-50 rounded-xl">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
-                    <i className="fas fa-file text-blue-600"></i>
+                <div key={transfer.id} className="flex items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center mr-4">
+                    <i className="fas fa-file text-blue-600 dark:text-blue-400"></i>
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-slate-900">Transfer #{transfer.id}</span>
-                      <span className="text-sm text-slate-500">{transfer.progress}%</span>
+                      <span className="font-medium text-slate-900 dark:text-white">Transfer #{transfer.id}</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">{transfer.progress}%</span>
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-slate-600">File ID: {transfer.fileId}</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">File ID: {transfer.fileId}</span>
                       {getStatusBadge(transfer.status)}
                     </div>
                     <Progress value={transfer.progress || 0} className="w-full" />
@@ -258,7 +258,7 @@ export default function FileSharing() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="ml-4 text-slate-400 hover:text-red-500"
+                    className="ml-4 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"
                   >
                     <i className="fas fa-times"></i>
                   </Button>
@@ -270,15 +270,15 @@ export default function FileSharing() {
       )}
 
       {/* Recent Files */}
-      <Card>
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Recent Files</CardTitle>
+            <CardTitle className="text-slate-900 dark:text-white">Recent Files</CardTitle>
             <div className="flex items-center space-x-2">
               {files && files.length > 0 && (
                 <Button 
                   variant="ghost" 
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                   onClick={handleClearAllClick}
                   data-testid="button-clear-all-files"
                 >
@@ -294,22 +294,22 @@ export default function FileSharing() {
             {recentFiles.map((file) => (
               <ContextMenu key={file.id}>
                 <ContextMenuTrigger>
-                  <div className="flex items-center p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
-                    <div className={`w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3`}>
+                  <div className="flex items-center p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer">
+                    <div className={`w-10 h-10 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center mr-3`}>
                       <i className={`${getFileIcon(file.mimeType)} ${getFileIconColor(file.mimeType)}`}></i>
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-slate-900">{file.originalName}</div>
-                      <div className="text-sm text-slate-500">
+                      <div className="font-medium text-slate-900 dark:text-white">{file.originalName}</div>
+                      <div className="text-sm text-slate-500 dark:text-slate-400">
                         Shared {new Date(file.uploadedAt!).toLocaleDateString()} • {formatFileSize(file.size)}
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Badge className="bg-green-100 text-green-800">Available</Badge>
+                      <Badge className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300">Available</Badge>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-slate-400 hover:text-blue-500"
+                        className="text-slate-400 dark:text-slate-500 hover:text-blue-500 dark:hover:text-blue-400"
                         onClick={() => handleDownload(file)}
                       >
                         <i className="fas fa-download text-sm"></i>
@@ -361,7 +361,7 @@ export default function FileSharing() {
             ))}
             
             {recentFiles.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                 <i className="fas fa-file text-2xl mb-2 block"></i>
                 <p>No files shared yet</p>
                 <p className="text-sm">Upload files to start sharing</p>

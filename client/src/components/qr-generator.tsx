@@ -104,17 +104,17 @@ export default function QRGenerator() {
 
   return (
     <div className="space-y-8">
-      <Card>
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
         <CardHeader>
-          <CardTitle>QR Code Generator</CardTitle>
-          <p className="text-sm text-slate-500">
+          <CardTitle className="text-slate-900 dark:text-white">QR Code Generator</CardTitle>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Generate QR codes from any URL or text. Perfect for sharing links, contact information, or any text data.
           </p>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div>
-              <label htmlFor="qr-input" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="qr-input" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Enter URL or Text
               </label>
               <Textarea
@@ -124,14 +124,14 @@ export default function QRGenerator() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 maxLength={maxLength}
-                className="min-h-[120px] resize-none"
+                className="min-h-[120px] resize-none bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
               />
               <div className="flex items-center justify-between mt-1">
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-400 dark:text-slate-500">
                   {characterCount}/{maxLength} characters
                 </span>
                 {text && (
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
                     Enter URL or text
                   </span>
                 )}
@@ -140,7 +140,7 @@ export default function QRGenerator() {
 
             {qrCodeUrl && (
               <div className="flex flex-col items-center space-y-4 py-6">
-                <div className="bg-white p-4 rounded-xl border-2 border-slate-200">
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-600">
                   <canvas ref={canvasRef} style={{ display: 'none' }} />
                   <img 
                     src={qrCodeUrl} 
@@ -154,7 +154,7 @@ export default function QRGenerator() {
                   <Button
                     onClick={handleCopyImage}
                     variant="outline"
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600"
                     data-testid="button-copy-qr"
                   >
                     <i className="fas fa-copy"></i>
@@ -162,7 +162,7 @@ export default function QRGenerator() {
                   </Button>
                   <Button
                     onClick={handleDownload}
-                    className="bg-blue-600 text-white hover:bg-blue-700 flex items-center space-x-2"
+                    className="bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 flex items-center space-x-2"
                     data-testid="button-download-qr"
                   >
                     <i className="fas fa-download"></i>
@@ -171,7 +171,7 @@ export default function QRGenerator() {
                   <Button
                     onClick={handleClear}
                     variant="outline"
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600"
                     data-testid="button-clear-qr"
                   >
                     <i className="fas fa-trash"></i>
@@ -182,7 +182,7 @@ export default function QRGenerator() {
             )}
 
             {!text && (
-              <div className="text-center py-12 text-slate-400">
+              <div className="text-center py-12 text-slate-400 dark:text-slate-500">
                 <i className="fas fa-qrcode text-4xl mb-3 block"></i>
                 <p className="text-sm">Enter text or URL above to generate QR code</p>
               </div>

@@ -166,15 +166,15 @@ export default function DeviceDiscovery() {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Connected Devices</CardTitle>
+            <CardTitle className="text-slate-900 dark:text-white">Connected Devices</CardTitle>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => refetch()}
-              className="p-2 text-slate-400 hover:text-blue-500"
+              className="p-2 text-slate-400 dark:text-slate-500 hover:text-blue-500 dark:hover:text-blue-400"
             >
               <i className="fas fa-sync-alt text-sm"></i>
             </Button>
@@ -185,21 +185,21 @@ export default function DeviceDiscovery() {
             {connectedDevices.map((device) => (
               <div
                 key={device.id}
-                className="flex items-center p-3 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="flex items-center p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               >
-                <div className={`w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-3`}>
+                <div className={`w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center mr-3`}>
                   <i className={`${getDeviceIcon(device.type)} ${getDeviceIconColor(device.type)}`}></i>
                 </div>
                 <div className="flex-1">
-                  <div className="font-medium text-slate-900">{device.name}</div>
-                  <div className="text-sm text-slate-500">{device.ipAddress}</div>
+                  <div className="font-medium text-slate-900 dark:text-white">{device.name}</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">{device.ipAddress}</div>
                 </div>
                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               </div>
             ))}
             
             {connectedDevices.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                 <i className="fas fa-search text-2xl mb-2 block"></i>
                 <p>No devices connected</p>
                 <p className="text-sm">Devices will appear here when they connect</p>
@@ -211,7 +211,7 @@ export default function DeviceDiscovery() {
             <DialogTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full mt-4 border-2 border-dashed border-slate-300 hover:border-blue-400 hover:text-blue-600"
+                className="w-full mt-4 border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300"
               >
                 <i className="fas fa-plus mr-2"></i>
                 Add Device
@@ -304,13 +304,13 @@ export default function DeviceDiscovery() {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
         <CardHeader>
-          <CardTitle>Quick Connect</CardTitle>
+          <CardTitle className="text-slate-900 dark:text-white">Quick Connect</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center">
-            <div className="w-48 h-48 mx-auto bg-white border-2 border-slate-200 rounded-2xl flex items-center justify-center mb-4 p-4">
+            <div className="w-48 h-48 mx-auto bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-600 rounded-2xl flex items-center justify-center mb-4 p-4">
               {qrCodeUrl ? (
                 <img 
                   src={qrCodeUrl} 
@@ -320,16 +320,16 @@ export default function DeviceDiscovery() {
                 />
               ) : (
                 <div className="flex items-center justify-center w-full h-full">
-                  <i className="fas fa-qrcode text-slate-400 text-4xl"></i>
+                  <i className="fas fa-qrcode text-slate-400 dark:text-slate-500 text-4xl"></i>
                 </div>
               )}
             </div>
-            <p className="text-sm font-medium text-slate-700 mb-2">Scan QR code to connect</p>
-            <p className="text-xs text-slate-500 mb-3">Other devices can scan this code to connect</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Scan QR code to connect</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Other devices can scan this code to connect</p>
             <Button
               variant="outline"
               size="sm"
-              className="text-xs"
+              className="text-xs bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600"
               onClick={() => {
                 navigator.clipboard.writeText(generateCurrentDeviceQR());
                 toast({
