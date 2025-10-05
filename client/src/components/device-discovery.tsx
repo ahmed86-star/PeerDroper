@@ -11,7 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import QRScannerComponent from './qr-scanner';
-import { useEffect, useState } from 'react';
+import QRCode from 'qrcode';
+import { useEffect, useState, useRef } from 'react';
 
 export default function DeviceDiscovery() {
   const [isAddDeviceOpen, setIsAddDeviceOpen] = useState(false);
@@ -20,6 +21,8 @@ export default function DeviceDiscovery() {
   const [deviceType, setDeviceType] = useState('');
   const [deviceIP, setDeviceIP] = useState('');
   const [qrCodeData, setQrCodeData] = useState('');
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
 
   const { data: devices, refetch } = useQuery<Device[]>({
@@ -134,6 +137,32 @@ export default function DeviceDiscovery() {
     }
     return 'droppy://MacBook%20Pro:desktop:192.168.1.100';
   };
+
+  useEffect(() => {
+    const generateQR = async () => {
+      const qrData = generateCurrentDeviceQR();
+      try {
+        if (canvasRef.current) {
+          await QRCode.toCanvas(canvasRef.current, qrData, {
+            width: 200,
+            margin: 2,
+            color: {
+              dark: '#1e293b',
+              light: '#ffffff',
+            },
+          });
+          const url = canvasRef.current.toDataURL('image/png');
+          setQrCodeUrl(url);
+        }
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+      }
+    };
+    
+    if (devices) {
+      generateQR();
+    }
+  }, [devices]);
 
   return (
     <div className="space-y-6">
@@ -281,34 +310,26 @@ export default function DeviceDiscovery() {
         </CardHeader>
         <CardContent>
           <div className="text-center">
-            <div className="w-32 h-32 mx-auto bg-white border-2 border-slate-200 rounded-2xl flex items-center justify-center mb-4 p-2">
-              <div className="w-full h-full bg-gradient-to-br from-slate-800 to-black rounded-lg flex items-center justify-center relative overflow-hidden">
-                {/* QR Code Pattern Simulation */}
-                <div className="grid grid-cols-8 gap-px w-full h-full p-1">
-                  {Array.from({ length: 64 }, (_, i) => (
-                    <div
-                      key={i}
-                      className={`${
-                        [0, 1, 2, 5, 6, 7, 8, 14, 16, 22, 24, 30, 32, 38, 40, 46, 48, 49, 50, 53, 54, 55, 57, 58, 59, 62, 63].includes(i)
-                          ? 'bg-white' 
-                          : 'bg-transparent'
-                      } rounded-sm`}
-                    />
-                  ))}
+            <div className="w-48 h-48 mx-auto bg-white border-2 border-slate-200 rounded-2xl flex items-center justify-center mb-4 p-4">
+              {qrCodeUrl ? (
+                <img 
+                  src={qrCodeUrl} 
+                  alt="Device QR Code" 
+                  className="w-full h-full object-contain"
+                  data-testid="img-device-qr"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full">
+                  <i className="fas fa-qrcode text-slate-400 text-4xl"></i>
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <i className="fas fa-qrcode text-white text-lg opacity-50"></i>
-                </div>
-              </div>
+              )}
             </div>
-            <p className="text-sm text-slate-600">Scan QR code to connect</p>
-            <div className="text-xs text-slate-500 mt-2 font-mono bg-slate-50 p-2 rounded">
-              {generateCurrentDeviceQR()}
-            </div>
+            <p className="text-sm font-medium text-slate-700 mb-2">Scan QR code to connect</p>
+            <p className="text-xs text-slate-500 mb-3">Other devices can scan this code to connect</p>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="mt-2 text-xs text-blue-600 hover:text-blue-700"
+              className="text-xs"
               onClick={() => {
                 navigator.clipboard.writeText(generateCurrentDeviceQR());
                 toast({
@@ -316,11 +337,13 @@ export default function DeviceDiscovery() {
                   description: 'QR code data copied successfully',
                 });
               }}
+              data-testid="button-copy-qr-data"
             >
               <i className="fas fa-copy mr-1"></i>
               Copy QR Data
             </Button>
           </div>
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
         </CardContent>
       </Card>
     </div>

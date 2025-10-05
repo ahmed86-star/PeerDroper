@@ -2,8 +2,6 @@ import AppHeader from '@/components/app-header';
 import DeviceDiscovery from '@/components/device-discovery';
 import FileSharing from '@/components/file-sharing';
 import QRGenerator from '@/components/qr-generator';
-import MessagingPanel from '@/components/messaging-panel';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {
@@ -38,15 +36,6 @@ export default function Home() {
             </Tabs>
           </div>
         </div>
-        
-        <MessagingPanel />
-        
-        {/* Floating Action Button for Mobile */}
-        <Button
-          className="fixed bottom-6 left-6 w-14 h-14 bg-blue-600 text-white rounded-2xl shadow-lg hover:bg-blue-700 transition-colors lg:hidden"
-        >
-          <i className="fas fa-bars"></i>
-        </Button>
       </main>
     </div>
   );
