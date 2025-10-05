@@ -115,7 +115,7 @@ export default function QRScannerComponent({ onScan, onError }: QRScannerProps) 
       </div>
       
       <p className="text-xs text-slate-500 text-center">
-        Point your camera at a Droppy QR code to connect a device
+        Point your camera at a QR code to open the app
       </p>
     </div>
   );

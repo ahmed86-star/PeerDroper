@@ -17,7 +17,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Ensure uploads directory exists
   if (!fs.existsSync('uploads')) {
-    fs.mkdirSync('uploads');
+    console.log('Creating uploads directory...');
+    fs.mkdirSync('uploads', { recursive: true });
+    console.log('Uploads directory created');
+  } else {
+    console.log('Uploads directory already exists');
   }
 
   // WebSocket server for real-time communication
@@ -101,9 +105,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // File upload
   app.post('/api/files/upload', upload.single('file'), async (req, res) => {
     try {
+      console.log('File upload attempt:', req.file ? 'File received' : 'No file');
+      
       if (!req.file) {
+        console.error('No file in request');
         return res.status(400).json({ error: 'No file uploaded' });
       }
+
+      console.log('Uploading file:', req.file.originalname, 'Size:', req.file.size);
 
       const fileData = {
         filename: req.file.filename,
@@ -114,9 +123,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const file = await storage.createFile(fileData);
+      console.log('File saved to database:', file.id);
       res.json(file);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to upload file' });
+      console.error('File upload error:', error);
+      res.status(500).json({ error: 'Failed to upload file', details: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
 
