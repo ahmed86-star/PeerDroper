@@ -2,6 +2,7 @@ import AppHeader from '@/components/app-header';
 import DeviceDiscovery from '@/components/device-discovery';
 import FileSharing from '@/components/file-sharing';
 import QRGenerator from '@/components/qr-generator';
+import ImageConverter from '@/components/image-converter';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Home() {
@@ -17,7 +18,7 @@ export default function Home() {
           
           <div className="lg:col-span-2">
             <Tabs defaultValue="files" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-4 bg-white dark:bg-slate-800">
+              <TabsList className="grid w-full grid-cols-3 mb-4 bg-white dark:bg-slate-800">
                 <TabsTrigger value="files" data-testid="tab-files">
                   <i className="fas fa-file mr-2"></i>
                   Share Files
@@ -26,12 +27,19 @@ export default function Home() {
                   <i className="fas fa-qrcode mr-2"></i>
                   QR Generator
                 </TabsTrigger>
+                <TabsTrigger value="convert" data-testid="tab-convert">
+                  <i className="fas fa-image mr-2"></i>
+                  Image Converter
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="files">
                 <FileSharing />
               </TabsContent>
               <TabsContent value="qr">
                 <QRGenerator />
+              </TabsContent>
+              <TabsContent value="convert">
+                <ImageConverter />
               </TabsContent>
             </Tabs>
           </div>
