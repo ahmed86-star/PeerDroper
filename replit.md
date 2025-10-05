@@ -13,10 +13,19 @@ Droppy is a local file sharing application that enables real-time file transfers
 
 ## Recent Changes (October 2025)
 
+- **Cloud Deployment Support** (October 5, 2025):
+  - QR Code now generates app URL instead of local IP for cloud compatibility
+  - Device Discovery updated to work without local network requirement
+  - Device identifier changed from IP address to optional field
+  - Scanning QR code opens app in new tab for easy mobile access
+  - Dynamic PORT support for Railway deployment
+  - Node.js 20 requirement specified in nixpacks.toml
+
 - **Dark Theme Support**: Added full dark mode with theme toggle button in header
   - ThemeProvider component manages theme state with localStorage persistence
   - All components updated with dark mode variants (cards, buttons, text, backgrounds)
   - Smooth transitions between light and dark modes
+  
 - **GitHub Link**: Added footer with link to https://github.com/ahmed86-star
 - **Clear All Files**: Added bulk file deletion with confirmation dialog
 - **Real QR Codes**: Upgraded Quick Connect section with actual scannable QR codes using qrcode library
@@ -82,6 +91,9 @@ Preferred communication style: Simple, everyday language.
 - File metadata stored in database with references
 - Transfer progress tracking through WebSocket updates
 - Support for large files up to 100MB
+- **Note for Railway**: Files are stored in ephemeral storage and will be deleted on redeploy
+  - For production use, consider implementing cloud storage (S3, Cloudinary, etc.)
+  - Current setup works for development and testing
 
 ## External Dependencies
 
